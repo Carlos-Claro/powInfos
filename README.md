@@ -7,7 +7,7 @@
 
 ## Descrição de cenários
 ### Cenário 1 (2002)
-Primeiros softwares do guiasjp, portal, powadmin, todos baseados em php, mysql. Com uma boa performance, utilizando php5. Tambem era utilizado microsoft Access para gerenciamentos financeiros.\
+Primeiros softwares do guiasjp, portal, powadmin, todos baseados em php, mysql. Com uma boa performance, utilizando php5. Tambem era utilizado microsoft Access para gerenciamentos financeiros.
 ### Cenário 2 (2014)
 Mixando seus antigos software, um monolito, baseado em php7 com auxilio de Codeigniter, abrange toda a edição de dados de site, portal, financeiro, clientes, integrações com softwares externos, uso de banco de dados MYsql, MongoDB, conta tambem uma API que utiliza o framework Flask para servir microserviços em Python para integração de dados internos e criação de imagens. \
 Adicionado setores financeiros, ocorrências, projetos, sistema novo de montagem de sites.\
@@ -66,7 +66,6 @@ Domínio: api.powempresas.com/*
 ### Front-ends
 Pod contendo Nginx, cert-manager, Redis, Vue.js \
 Sessão compartilhada
-
 - Administrativos - Domínio: painel.powempresas.com/admin
 - Cadastráveis - Domínio: painel.powempresas.com/*
 - Sites - Domínios: dos clientes
@@ -79,8 +78,46 @@ Centralização de disco para imagens gerais, notícias, sites, cadastráveis
 ## Detalhamento
 ### Infraestrutura K8s
 Servidor baseado em Kubernetes, dividido em pods para cada núcleo, certificados digitais https via cert-manager, observabilidade.
+
 Um pod para administrar a sessão e chaves de cada usuário, seja cliente ou agente externo. A liberação de uso é feita por aplicação.
+
 Nucleos administrativo e cadastraveis contam com api e frontends separados, as apis podems ser consultadas e utilizadas por detentores de chaves, fontends recebem chaves e criam sessão de usuários, agente externos recebem chaves e liberações.
+
+### Ecossistema
+Hoje o ecossistema esta centralizado entre cenario 2, e legado separado em cenario 1. 
+
+A existência de comunicação externa para sites como portaisimobiliários.com.br, que consultam diretamente o banco de dados, são um desafio de estrutura mudando o contexto de comunicação nessas aplicações e isso vai influenciar no cronograma e na ativação e desativação das ferramentas desenvolvidas.
+
+O banco de dados MySQL hoje está com colunas excessivas, que na maioria já foram transformadas em tabelas secundárias, demandando a otimização e melhoria dessas tabelas. Podendo gerar a necessidade de normatizar tabelas que ainda não foram secundarizadas.
+
+### Portais imobiliários
+FrontEnd isolado numa estrutura K8s escalável. As consultas de imóveis serão feitas via API Imóveis, com chaves de sessão. Os contatos e interações com clientes é realizada para a API Clientes, salvando contatos. A verificação de integridade contratual é feita assincronamente e diáriamente junto a API Admin. 
+
+Vamos redefinir o uso do MongoDB, para apenas Logs/Estatísticas, sendo processados e disponibilizados por API Logs.
+
+Pensando no conceito de teorema CAP, focando em CP (Consistency/Patition tolerance) os portais tem necessidade de leitura alta e confiabilidade de informação, com tolerância de escala e rapidez das respostas, para isso, a disponibilização das páginas será feita por cache, através de hash de url e salvamento dos resultados de pesquisa como `chave:valor`, tratando um problema antigo de páginas não existentes sendo buscadas a todo momento. O processo de alimentação do cache vai verificar o redis para saber se aquela consulta já foi feita através da chave, caso seja, já retorna rapidamente o resultado, caso não tenha resultado, busca no APIImóveis, disponibiliza o resultado na página e salva no cache do redis, diminuindo assim as consultas pesadas ao banco de dados / API Imóveis. Esse artificio vai ser aplicado a todos os portais. A Atualização se dará imóvel isoladamente e para pesquisa diariamente.
+
+#### Estrutura de chave:valor do redis
+Para pesquisa: 
+
+chave = hash dos campos pesquisados, ex: tipo_imovel=apartamento,casa&tipo_negocio=venda
+
+valor = resultado da pesquisa com imóveis em json da API Imoveis
+
+Para ficha do imóvel:
+
+chave = id:9999
+
+valor = resultado em json da APIImoveis com todas as informações.
+
+#### Demais estruturas dos portais
+Menus tipos por cidade: arquivo com conteudo json por cidade, gerado diariamente.
+
+Estatisticas de tipo/bairro/quantidade/média arquivo json, gerado semanalmente.
+
+
+### Compatibilidade
+### Cronograma
 
 
 
