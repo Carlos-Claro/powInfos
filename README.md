@@ -86,9 +86,15 @@ Nucleos administrativo e cadastraveis contam com api e frontends separados, as a
 ### Ecossistema
 Hoje o ecossistema esta centralizado entre cenario 2, e legado separado em cenario 1. 
 
-A existência de comunicação externa para sites como portaisimobiliários.com.br, que consultam diretamente o banco de dados, são um desafio de estrutura mudando o contexto de comunicação nessas aplicações e isso vai influenciar no cronograma e na ativação e desativação das ferramentas desenvolvidas.
+A existência de comunicação externa para sites como portaisimobiliários.com.br, que consultam diretamente o banco de dados, são um desafio de estrutura mudando o contexto de comunicação nessas aplicações e isso vai influenciar no cronograma e na ativação e desativação das ferramentas desenvolvidas, além de definirmos a centralização dessas ações.
 
-O banco de dados MySQL hoje está com colunas excessivas, que na maioria já foram transformadas em tabelas secundárias, demandando a otimização e melhoria dessas tabelas. Podendo gerar a necessidade de normatizar tabelas que ainda não foram secundarizadas.
+O banco de dados MySQL hoje está com colunas excessivas, que na maioria já foram transformadas em tabelas secundárias, demandando a otimização e melhoria dessas tabelas. Podendo gerar a necessidade de normatizar tabelas que ainda não foram secundarizadas. O Cache é feito no proprio MySQL, gerando um excesso de uso de memória comparado ao uso de vCPU, para otimizar isso vamos separar a responsabilidade do cache para as aplicações que necessitem. Aplicação de infraestrutura K8s com readReplicas e operators de sincronização, deixando a estrutura mais forte na escritas, com filas.
+
+O monolito administrativo, tem uma grande responsabilidade de servir os clientes, o funcionamento da POW, os portais (imobiliários/guiasjp) e sites de clientes, isso será separado para aplicarmos o teorema CAP na decisão de CA (Consistency / Disponibilidade), aqui temos informações importante e que devem estar corretas a todo momento. por isso as api's serão isoladas, junto com elas suas tabelas.
+
+### Administrativo
+
+### Sites
 
 ### Portais imobiliários
 FrontEnd isolado numa estrutura K8s escalável. As consultas de imóveis serão feitas via API Imóveis, com chaves de sessão. Os contatos e interações com clientes é realizada para a API Clientes, salvando contatos. A verificação de integridade contratual é feita assincronamente e diáriamente junto a API Admin. 
@@ -115,6 +121,7 @@ Menus tipos por cidade: arquivo com conteudo json por cidade, gerado diariamente
 
 Estatisticas de tipo/bairro/quantidade/média arquivo json, gerado semanalmente.
 
+### GuiaSJP
 
 ### Compatibilidade
 ### Cronograma
