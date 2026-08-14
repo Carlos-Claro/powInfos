@@ -1,6 +1,6 @@
-@author - Carlos Claro
-@date - 2026-08-01
-@title - Aplicando system design buscando otimizar processos e infraestrutura.
+@author - Carlos Claro \
+@date - 2026-08-01 \
+@title - Aplicando system design buscando otimizar processos e infraestrutura. \
 @abstract - Utilizar microserviços que intercomunicão através de API's, otimização de banco de dados, integração e migração de dados.
 
 # Projeto POW 3
