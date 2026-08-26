@@ -111,6 +111,24 @@ Verificações de login, acesso e chaves.
 Todos consomem a validação de contrato.
 
 Banco de dados MySQL/MariaDB.
+
+- Cadastros
+    - auxiliar -> verifica 
+    - autorizadores
+    - verificação de dados
+    - assinatura digital
+    - autorizadores
+    - login automático
+- Empresas
+- Contratos
+    - Aprovação de contratos
+    - Verificação automática dos dados do contratante
+- Financeiro
+    - Manter faturamento atual
+    - integração de notas fiscais com a prefeitura
+    - otimização de processo automatizado de cobrança de atrasados
+    - faturamento automático, conferencia e relatórios.
+
 ### API Imóveis
 Reproduzir as funcionalidades que já temos hoje, limpando os campos de tabelas, fornecendo dados para portais, gerenciamento de cache de pesquisas buscando aliviar o banco de dados principal. 
 
@@ -135,17 +153,16 @@ Reproduzir as funcionalidades que já temos hoje, limpando os campos de tabelas,
 #### Estrutura API
 Banco de dados MySQL/postgreSQL isolado com tabela principal e secundárias, formando a estrutura do serviço de imóveis.
 Cache de Redis para resultados de busca de imóveis por catálogo, a limpeza é feita através de tags, quando existe modificação.
-BackEnd valida acesso via administração, alimenta e recebe dados 
-
-FrontEnd 
+Cache de autorizações e contratos, limpa 1x por dia
+BackEnd valida acesso via administração, alimenta e recebe dados
+Armazenamento de imagens no storage principal
+#### Administração de imóveis 
+Front-end em vue.js
 
 ### Sites
 Serviço de exibição de sites, utilizando o modelo de montagem 2.0, mantem em admin.powempresas.com, mas migra com o tempo para a nova, com novos sites.
 
 Gerenciador de montagem de site consome Administrativo para validar contratos.
-
-
-
 
 ### Portais imobiliários
 FrontEnd isolado numa estrutura K8s escalável. As consultas de imóveis serão feitas via API Imóveis, com chaves de sessão. Os contatos e interações com clientes é realizada para a API Clientes, salvando contatos. A verificação de integridade contratual é feita assincronamente e diáriamente junto a API Admin.
@@ -161,10 +178,16 @@ Estatisticas de tipo/bairro/quantidade/média arquivo json, gerado semanalmente.
 
 ### GuiaSJP
 
-
 ### Compatibilidade
 
 ### Cronograma
+Levando em consideração os operadores principais para o funcionamento da POW. 
+
+O custo maior com servidor, tem sido MongoDB, então, preparar APIImóveis para exportar os imóveis.
+- API Empresas
+- API Imóveis
+- Admin Imóveis
+- Front-end Portais imóveis com redis.
 
 #### Estrutura de chave:valor do redis
 Para pesquisa: 
