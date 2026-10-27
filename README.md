@@ -184,6 +184,7 @@ Estatisticas de tipo/bairro/quantidade/média arquivo json, gerado semanalmente.
 Levando em consideração os operadores principais para o funcionamento da POW. 
 
 O custo maior com servidor, tem sido MongoDB, então, preparar APIImóveis para exportar os imóveis.
+- Otimização de tabelas
 - API Empresas
 - API Imóveis
 - Admin Imóveis
